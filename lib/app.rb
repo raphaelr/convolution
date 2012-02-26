@@ -9,6 +9,8 @@ module Convolution
 		WAVEFORM_OPTIONS = { :peak => PEAK, :ystep => 0.1 }
 		DATA_DIR = File.join(File.dirname(__FILE__), "..", "data")
 		
+		SECOND_SIGNAL_TEXT = { :convolution => ["Impulse", "Response:"], :correlation => ["Target", "Signal:"] }
+		
 		def self.run
 			new.run
 		end
@@ -32,7 +34,7 @@ module Convolution
 			@screen.title = "Convolution / Impulse Response"
 			
 			@running = true
-			make_magic_hooks(:escape => :quit, Events::QuitRequested => :quit, :tab => :switch_focus)
+			make_magic_hooks(:escape => :quit, Events::QuitRequested => :quit, :tab => :switch_focus, :space => :switch_mode)
 			
 			@input = Waveform.new(WAVEFORM_OPTIONS.merge(:samples => SAMPLES, :name => "f" ))
 			@input.rect = [120, 0]
@@ -45,8 +47,6 @@ module Convolution
 			@sprites << @input << @response << @output
 			
 			@sprites << Text.new(@font, "Input:", [5, @input.image.height/2 - @font.height/2])
-			@sprites << Text.new(@font, "Impulse", [5, @response.rect[1] + @response.image.height/3 - @font.height/2])
-			@sprites << Text.new(@font, "Response:", [5, @response.rect[1] + 2*@response.image.height/3 - @font.height/2])
 			@sprites << Text.new(@font, "Output:", [5, @output.rect[1] + @output.image.height/2 - @font.height/2])
 			
 			@input.focus = true
@@ -58,6 +58,16 @@ module Convolution
 			@input.amplitudes = @controller.input
 			@response.amplitudes = @controller.response
 			@output.amplitudes = @controller.output
+			update_signal_text
+		end
+		
+		def update_signal_text
+			@sprites.delete(*@signal_texts || [])
+			@signal_texts = [
+				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][0], [20, @response.rect[1] + @response.image.height/3 - @font.height/2]),
+				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][1], [20, @response.rect[1] + 2*@response.image.height/3 - @font.height/2])
+			]
+			@sprites.push(*@signal_texts)
 		end
 		
 		def quit
@@ -69,6 +79,11 @@ module Convolution
 			tmp = true unless @input.focus
 			@response.focus = @input.focus
 			@input.focus = tmp
+		end
+		
+		def switch_mode(ev)
+			@controller.mode = @controller.mode == :convolution ? :correlation : :convolution
+			update_signal_text
 		end
 		
 		def run

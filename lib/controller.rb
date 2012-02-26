@@ -3,9 +3,10 @@ module Convolution
 		attr_reader :input, :response, :output
 		attr_reader :mode
 		
-		VALID_MODES = [:convolution, :correlation]
+		MODES = [:convolution, :correlation]
 		def mode=(new_mode)
-			raise ArgumentError, "mode must be one of #{VALID_MODES.join(", ")}"
+			raise ArgumentError, "mode must be one of #{MODES.join(", ")}" unless MODES.include? new_mode
+			@mode = new_mode
 		end
 		
 		def initialize(samples, response_impulses, peak)
@@ -25,7 +26,7 @@ module Convolution
 				(0...@response_impulses).each do |r|
 					response_index = case @mode
 						when :convolution then r
-						when :correlation then @response_impulses - r
+						when :correlation then @response_impulses - r - 1
 					end
 					@output[i + r] += @input[i] * @response[response_index]
 				end

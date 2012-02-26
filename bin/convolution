@@ -1,0 +1,14 @@
+require "stringio"
+old_stdout = $stdout
+$stdout = StringIO.new
+require "rubygame"
+$stdout = old_stdout
+
+module Convolution
+	module Library_
+		LIBRARY_DIR = File.join(File.dirname(__FILE__), "..", "lib")
+		Dir.glob(File.join(LIBRARY_DIR, "**/*.rb")) { |f| require f }
+	end
+end
+
+Convolution::App.run

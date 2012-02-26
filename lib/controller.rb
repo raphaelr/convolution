@@ -1,11 +1,18 @@
 module Convolution
 	class Controller
 		attr_reader :input, :response, :output
+		attr_reader :mode
+		
+		VALID_MODES = [:convolution, :correlation]
+		def mode=(new_mode)
+			raise ArgumentError, "mode must be one of #{VALID_MODES.join(", ")}"
+		end
 		
 		def initialize(samples, response_impulses, peak)
 			@samples = samples
 			@response_impulses = response_impulses
 			@peak = peak
+			@mode = :convolution
 			
 			@input = (0...@samples).collect { |x| @peak*Math.sin(ExMath.period_f * x) }
 			@response = Array.new(samples, 0)
@@ -16,7 +23,11 @@ module Convolution
 			@output.fill(0)
 			(0...@samples).each do |i|
 				(0...@response_impulses).each do |r|
-					@output[i + r] += @input[i] * @response[r]
+					response_index = case @mode
+						when :convolution then r
+						when :correlation then @response_impulses - r
+					end
+					@output[i + r] += @input[i] * @response[response_index]
 				end
 			end
 		end

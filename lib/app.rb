@@ -17,7 +17,6 @@ module Convolution
 		
 		def initialize
 			TTF.setup
-			Rubygame.enable_key_repeat
 			@font = TTF.new(File.join(DATA_DIR, "font.ttf"), 24)
 			
 			@queue = EventQueue.new
@@ -31,7 +30,8 @@ module Convolution
 			@sprites = Sprites::Group.new
 			
 			@screen = Screen.new([1430, 575], 24, [HWSURFACE, DOUBLEBUF])
-			@screen.title = "Convolution / Impulse Response"
+			@screen.title = "Convolution / Correlation"
+			Rubygame.enable_key_repeat(0.3, 0.05)
 			
 			@running = true
 			make_magic_hooks(:escape => :quit, Events::QuitRequested => :quit, :tab => :switch_focus, :space => :switch_mode)

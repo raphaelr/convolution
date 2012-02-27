@@ -26,7 +26,7 @@ module Convolution
 				(0...@response_impulses).each do |r|
 					response_index = case @mode
 						when :convolution then r
-						when :correlation then -r
+						when :correlation then @response_impulses - r - 1
 					end
 					@output[i + r] += @input[i] * @response[response_index]
 				end

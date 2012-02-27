@@ -64,8 +64,8 @@ module Convolution
 		def update_signal_text
 			@sprites.delete(*@signal_texts || [])
 			@signal_texts = [
-				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][0], [20, @response.rect[1] + @response.image.height/3 - @font.height/2]),
-				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][1], [20, @response.rect[1] + 2*@response.image.height/3 - @font.height/2])
+				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][0], [5, @response.rect[1] + @response.image.height/3 - @font.height/2]),
+				Text.new(@font, SECOND_SIGNAL_TEXT[@controller.mode][1], [5, @response.rect[1] + 2*@response.image.height/3 - @font.height/2])
 			]
 			@sprites.push(*@signal_texts)
 		end

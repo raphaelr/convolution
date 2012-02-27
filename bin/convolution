@@ -1,8 +1,12 @@
+require "rubygems"
+require "bundler/setup"
+
 require "stringio"
 old_stdout = $stdout
-$stdout = StringIO.new
-require "rubygame"
+$stdout = tempio = StringIO.new
+result = require "rubygame"
 $stdout = old_stdout
+$stderr.puts tempio.string unless result
 
 module Convolution
 	module Library_

@@ -12,7 +12,7 @@ module Convolution
 		end
 		
 		def period_f
-			6*PI/samples
+			2*PI/samples
 		end
 		
 		def sinc(t)

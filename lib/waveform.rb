@@ -16,6 +16,7 @@ module Convolution
 			@name = options[:name] || "q"
 			@samples = options[:samples] || 10
 			@peak = options[:peak] || 1.0
+			@default_peak = @peak
 			@ystep = options[:ystep] || @peak / @samples
 			@hspace = options[:hspace] || 10
 			@boxwidth = options[:boxwidth] || @hspace/2 - 1
@@ -38,9 +39,10 @@ module Convolution
 			
 			@amplitudes = Array.new(@samples, 0)
 			@legend = WaveformLegend.new(self, options)
-			make_magic_hooks(:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down)
-			make_magic_hooks(:mouse_left => :recheck_focus, :mouse_right => :load_equation) if @controllable
-			make_magic_hooks(EventTriggers::MouseMoveTrigger.new(:any) => :recheck_hover)
+			make_magic_hooks(:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down,
+				:add => :plus, :minus => :minus, :period => :default_zoom)
+			make_magic_hooks(:mouse_right => :load_equation) if @controllable
+			make_magic_hooks(:mouse_left => :recheck_focus, EventTriggers::MouseMoveTrigger.new(:any) => :recheck_hover)
 			make_magic_hooks(:mouse_wheel_up => :wheel_up, :mouse_wheel_down => :wheel_down)
 		end
 		
@@ -60,12 +62,33 @@ module Convolution
 			@amplitudes[@selected_sample] -= @ystep if @controllable && @focus
 		end
 		
+		def default_zoom
+			puts "default"
+			@peak = @default_peak if @focus
+		end
+		
+		def plus
+			zoom_in if @focus
+		end
+		
+		def minus
+			zoom_out if @focus
+		end
+		
 		def wheel_up
-			@peak *= 1+ystep if @hovered
+			zoom_in if @hovered
 		end
 		
 		def wheel_down
-			@peak /= 1+ystep if @hovered
+			zoom_out if @hovered
+		end
+		
+		def zoom_out
+			@peak *= 1+ystep
+		end
+		
+		def zoom_in
+			@peak /= 1+ystep
 		end
 		
 		def recheck_focus(ev)

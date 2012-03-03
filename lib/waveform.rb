@@ -38,7 +38,7 @@ module Convolution
 			@active = Color[:red]
 			
 			@amplitudes = Array.new(@samples, 0)
-			@legend = WaveformLegend.new(options)
+			@legend = WaveformLegend.new(self, options)
 			make_magic_hooks(:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down)
 			make_magic_hooks(:mouse_left => :recheck_focus, :mouse_right => :load_equation) if @controllable
 		end
@@ -88,7 +88,7 @@ module Convolution
 			@image.h - @height/2 - @height/2 * y/@peak
 		end
 		
-		def draw(target)
+		def update
 			@image.fill(@background)
 			@image.draw_line([0, image_y(0)], [@width, image_y(0)], @grid)
 			(0...@samples).each do |i|
@@ -99,10 +99,6 @@ module Convolution
 				p2 = [image_x(i) + @boxwidth/2, image_y(@amplitudes[i]) - @boxheight/2]
 				@image.draw_box_s(p1, p2, sample_color)
 			end
-			@image.blit(target, @rect)
-		end
-		
-		def update
 			@legend.update
 		end
 	end

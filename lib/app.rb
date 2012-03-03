@@ -93,6 +93,7 @@ module Convolution
 				
 				@screen.fill(Color[:white])
 				@controller.update
+				@sprites.update
 				@sprites.draw(@screen)
 				@screen.draw_line([0, 175], [@screen.width, 175], Color[:black])
 				@screen.draw_line([0, 375], [@screen.width, 375], Color[:black])

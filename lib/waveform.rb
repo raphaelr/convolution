@@ -38,6 +38,7 @@ module Convolution
 			@active = Color[:red]
 			
 			@amplitudes = Array.new(@samples, 0)
+			@legend = WaveformLegend.new(options)
 			make_magic_hooks(:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down)
 			make_magic_hooks(:mouse_left => :recheck_focus, :mouse_right => :load_equation) if @controllable
 		end
@@ -102,6 +103,7 @@ module Convolution
 		end
 		
 		def update
+			@legend.update
 		end
 	end
 end

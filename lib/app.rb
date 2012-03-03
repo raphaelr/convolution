@@ -5,7 +5,7 @@ module Convolution
 		
 		SAMPLES = 100
 		RESPONSE_IMPULSES = 30
-		PEAK = 2.0
+		PEAK = 1.0
 		WAVEFORM_OPTIONS = { :peak => PEAK, :ystep => 0.1 }
 		DATA_DIR = File.join(File.dirname(__FILE__), "..", "data")
 		

@@ -17,13 +17,17 @@ module Convolution
 			[0, @parent.peak, -@parent.peak]
 		end
 		
+		def float_s(f)
+			((f*100).truncate / 100.0).to_s
+		end
+		
 		def update
 			@image.fill(@parent.background)
 			@rect = @parent.rect.dup
-			@rect.x -= y_labels.collect { |y| @font.size_text(y.to_s)[0] }.max
+			@rect.x -= y_labels.collect { |y| @font.size_text(float_s(y))[0] }.max
 			
 			y_labels.each do |y|
-				text = @font.render(y.to_s, true, @labels)
+				text = @font.render(float_s(y), true, @labels)
 				text.blit(@image, [0, @parent.image_y(y) - text.height/2])
 			end
 		end

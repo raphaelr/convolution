@@ -40,6 +40,8 @@ module Convolution
 			@legend = WaveformLegend.new(self, options)
 			make_magic_hooks(:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down)
 			make_magic_hooks(:mouse_left => :recheck_focus, :mouse_right => :load_equation) if @controllable
+			make_magic_hooks(EventTriggers::MouseMoveTrigger.new(:any) => :recheck_hover)
+			make_magic_hooks(:mouse_wheel_up => :wheel_up, :mouse_wheel_down => :wheel_down)
 		end
 		
 		def move_left
@@ -58,8 +60,20 @@ module Convolution
 			@amplitudes[@selected_sample] -= @ystep if @controllable && @focus
 		end
 		
+		def wheel_up
+			@peak *= 1+ystep if @hovered
+		end
+		
+		def wheel_down
+			@peak /= 1+ystep if @hovered
+		end
+		
 		def recheck_focus(ev)
 			@focus = point_in_rect(ev.pos)
+		end
+		
+		def recheck_hover(ev)
+			@hovered = point_in_rect(ev.pos)
 		end
 		
 		def load_equation(ev)
@@ -76,7 +90,7 @@ module Convolution
 		end
 		
 		def point_in_rect(pos)
-			pos[0].between?(@rect[0], @rect[0] + @width) && pos[1].between?(@rect[1], @rect[1] + @height)
+			rect.collide_point?(*pos)
 		end
 		
 		def image_x(x)

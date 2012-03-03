@@ -29,13 +29,12 @@ module Convolution
 			@selected_sample = 0
 			
 			@image = Surface.new([@width, @height], 24, [HWSURFACE])
-			@image.convert($screen)
-			@rect = [0, 0, @width, @height]
+			@rect = Rect.new([0, 0, @width, @height])
 			
-			@background = Color[:white]
-			@grid = Color[:silver]
-			@point = Color[:blue]
-			@active = Color[:red]
+			@background = options[:background] || Color[:white]
+			@grid = options[:grid] || Color[:silver]
+			@point = options[:point] || Color[:blue]
+			@active = options[:active] || Color[:red]
 			
 			@amplitudes = Array.new(@samples, 0)
 			@legend = WaveformLegend.new(self, options)
@@ -85,7 +84,12 @@ module Convolution
 		end
 		
 		def image_y(y)
-			@image.h - @height/2 - @height/2 * y/@peak
+			@image.h - @height/2 - @height/2 * y/(@peak+0.1)
+		end
+		
+		def draw(*args)
+			@legend.draw(*args)
+			super(*args)
 		end
 		
 		def update

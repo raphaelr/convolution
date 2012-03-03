@@ -3,20 +3,29 @@ module Convolution
 		include Rubygame
 		include Sprites::Sprite
 		
+		attr_reader :parent
+		attr_accessor :font
+		
 		def initialize(parent, options = {})
 			@parent = parent
-			update
+			@font = options[:font]
+			@labels = options[:labels] || Color[:black]
+			@image = Surface.new([@parent.image.width, @parent.image.height], 32, [HWSURFACE])
 		end
 		
 		def y_labels
 			[0, @parent.peak, -@parent.peak]
 		end
 		
-		def draw(target)
-		end
-		
 		def update
-			@image = Surface.new([@parent.image.width, @parent.image.height])
+			@image.fill(@parent.background)
+			@rect = @parent.rect.dup
+			@rect.x -= y_labels.collect { |y| @font.size_text(y.to_s)[0] }.max
+			
+			y_labels.each do |y|
+				text = @font.render(y.to_s, true, @labels)
+				text.blit(@image, [0, @parent.image_y(y) - text.height/2])
+			end
 		end
 	end
 end

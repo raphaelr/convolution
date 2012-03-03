@@ -9,10 +9,6 @@ module Convolution
 			@rect = rect
 		end
 		
-		def draw(target)
-			@image.blit(target, @rect)
-		end
-		
 		def update
 		end
 	end

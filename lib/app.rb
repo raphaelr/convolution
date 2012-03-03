@@ -17,7 +17,9 @@ module Convolution
 		
 		def initialize
 			TTF.setup
-			@font = TTF.new(File.join(DATA_DIR, "font.ttf"), 24)
+			fontpath = File.join(DATA_DIR, "font.ttf")
+			@font = TTF.new(fontpath, 24)
+			WAVEFORM_OPTIONS[:font] = TTF.new(fontpath, 10)
 			
 			@queue = EventQueue.new
 			@queue.enable_new_style_events
@@ -29,7 +31,7 @@ module Convolution
 			@handlers = [self]
 			@sprites = Sprites::Group.new
 			
-			@screen = Screen.new([1430, 575], 24, [HWSURFACE, DOUBLEBUF])
+			@screen = Screen.new([1450, 575], 24, [HWSURFACE, DOUBLEBUF])
 			@screen.title = "Convolution / Correlation"
 			Rubygame.enable_key_repeat(0.3, 0.05)
 			
@@ -37,12 +39,12 @@ module Convolution
 			make_magic_hooks(:escape => :quit, Events::QuitRequested => :quit, :tab => :switch_focus, :space => :switch_mode)
 			
 			@input = Waveform.new(WAVEFORM_OPTIONS.merge(:samples => SAMPLES, :name => "f" ))
-			@input.rect = [120, 0]
+			@input.rect.topleft = [140, 0]
 			@response = Waveform.new(WAVEFORM_OPTIONS.merge(:samples => RESPONSE_IMPULSES, :name => "h"))
-			@response.rect = [120, 200]
+			@response.rect.topleft = [140, 200]
 			@output = Waveform.new(WAVEFORM_OPTIONS.merge(:samples => SAMPLES + RESPONSE_IMPULSES))
 			@output.controllable = false
-			@output.rect = [120, 400]
+			@output.rect.topleft = [140, 400]
 			@handlers << @input << @response << @output
 			@sprites << @input << @response << @output
 			

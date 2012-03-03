@@ -79,17 +79,23 @@ module Convolution
 			pos[0].between?(@rect[0], @rect[0] + @width) && pos[1].between?(@rect[1], @rect[1] + @height)
 		end
 		
+		def image_x(x)
+			@hspace/2 + x*@hspace
+		end
+		
+		def image_y(y)
+			@image.h - @height/2 - @height/2 * y/@peak
+		end
+		
 		def draw(target)
 			@image.fill(@background)
-			@image.draw_line([0, @height/2], [@width, @height/2], @grid)
+			@image.draw_line([0, image_y(0)], [@width, image_y(0)], @grid)
 			(0...@samples).each do |i|
-				@image.draw_line([@hspace/2 + i*@hspace, 0], [@hspace/2 + i*@hspace, @height], @grid)
+				@image.draw_line([image_x(i), 0], [image_x(i), @height], @grid)
 				
 				sample_color = @controllable && @focus && i == @selected_sample ? @active : @point
-				y = (@peak*@height/2 + @height/2 * @amplitudes[i] - @boxheight/2) / @peak
-				y = [[y, @height + @boxheight].min, -@boxheight].max
-				p1 = [@hspace/2 + i*@hspace - @boxwidth/2, @image.h - y]
-				p2 = [@hspace/2 + i*@hspace + @boxwidth/2, @image.h - y - @boxheight]
+				p1 = [image_x(i) - @boxwidth/2, image_y(@amplitudes[i]) + @boxheight/2]
+				p2 = [image_x(i) + @boxwidth/2, image_y(@amplitudes[i]) - @boxheight/2]
 				@image.draw_box_s(p1, p2, sample_color)
 			end
 			@image.blit(target, @rect)
